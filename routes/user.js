@@ -10,6 +10,9 @@ const Joi = require('joi');
 const mongoose = require('mongoose');
 const User = require('../models/users');
 
+const pageNumber = 1;
+const pageSize = 3;
+
 // Dummy Data just for testing
 let users = [
   {'id': 1 , 'name': 'Muklah', 'cool': false},
@@ -18,7 +21,8 @@ let users = [
 
 // Getting all users
 router.get('/all', (req, res) => {
-  User.find().then(result => {
+  User.find()
+  .then(result => {
     res.send(result);
   }).catch(err => {
     res.status(400).send(err)
@@ -27,7 +31,8 @@ router.get('/all', (req, res) => {
 
 // Getting spesific users
 router.get('/', (req, res) => {
-  User.find({ name: req.body.name, age: req.body.age}) // This is means WHERE NAME == Hamdon && AGE == 24
+  User.find()
+  .or([ { name: req.body.name }, { age: req.body.age} ]) // This is means WHERE NAME == Hamdon && AGE == 24
   .limit(10)  //  This for setting a limit to the requesr
   .sort({ name: 1 })  //  Sorting according the name 1 mean asc -1 means desc
   .select({ name: 1, age: 1 }) //  Means that get me the name and age only
