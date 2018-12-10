@@ -27,6 +27,7 @@ app.use(express.json());
 app.use(hello);
 // For serving images and other static data
 app.use(express.static('public'));
+
 // Custom MiddleWare
 // app.use((req, res, next) => {
 //   try {

@@ -10,8 +10,33 @@ const Joi = require('joi');
 const mongoose = require('mongoose');
 const User = require('../models/users');
 
-const pageNumber = 1;
-const pageSize = 3;
+/*
+ *  @TODO you can use below to create a more complex Queries
+ *  eq  Equal
+ *  ne  Eot Equal
+ *  gt  Greater Than
+ *  gte Greater Than or Equal
+ *  ls  Less Than
+ *  lte Less Than or Equal
+ *  in  Contain
+ *  nin Not in
+ *  //  Example:
+ *  .find({ age: { $gte: 18, $lt: 40 } })  Means that the age should be >= 18 AND less than 40
+ *  .find({ age: { $in: [18, 19, 20] } })  Means that the age should equal one of the array items
+ *  // Adding OR operator
+ *  Keep the find() emplty just like that then write your or operator, just like below
+ *  .find().or([ { age: { $gte: 18 } }, { name: 'Hamdon' } ])
+ *  //
+ *
+ *  @TODO
+ *  You Can Set a Pagination Like This:
+ *
+ *  const pageNumber = 1;
+ *  const pageSize = 10;
+ *  .skip((pageNumber - 1) * pageSize)
+ *
+ *
+ */
 
 // Dummy Data just for testing
 let users = [
@@ -108,7 +133,7 @@ router.delete('/:id', (req, res) => {
 //  To validate the POST PUT requestes
 function userValidating(user) {
   const userSchema = {
-    'name': Joi.string().min(3).required(),
+    'name': Joi.string().min(5).required(),
     'age': Joi.number().required()
   }
   return Joi.validate(user, userSchema);
