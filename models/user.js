@@ -28,7 +28,7 @@ const userSchema = mongoose.Schema({
   name: {
     type: String,
     required: function () {
-      return this.age > 3 ;
+      return true ;
     }
   },
   email: {
@@ -38,10 +38,6 @@ const userSchema = mongoose.Schema({
   password: {
     type: String,
     required: [true, 'password Is Required']
-  },
-  age: {
-    type: Number,
-    required: [true, 'Age Is Required']
   },
 
 });

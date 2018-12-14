@@ -93,8 +93,7 @@ router.post('/', (req, res) => {
       _id: new mongoose.Types.ObjectId(),
       name: req.body.name,
       email: req.body.email,
-      password: req.body.password,
-      age: req.body.age
+      password: req.body.password
     });
     //  Checking the Mongoose Schema Validating
     const v = user.validateSync();
@@ -132,8 +131,7 @@ router.post('/register', (req, res) => {
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         email: req.body.email,
-        password: hash,
-        age: req.body.age
+        password: hash
       });
       const v = user.validateSync();
       if (v)
@@ -150,28 +148,47 @@ router.post('/register', (req, res) => {
   });
 });
 
+// Check Login
+router.post('/checklogin', (req, res) => {
+
+  var token = req.headers['x-access-token'];
+  if (token)
+    jwt.verify(token, 'publickKey', (err, decoded) => {
+      if (err) {
+        return res.status(500).send({ message: 'Unvalidate payload' });
+      }
+      res.status(200).send({ message: 'You are logged in' , decoded });
+
+      return res.status(401).send({ message: 'You have to login' });
+    });
+});
+
+// Don't forget to give me plus for writing the register be myself
 // Login user
 router.post('/login', (req, res) => {
-  User.findOne({ email: req.body.email }, { password: req.body.password })
+  const validating = userValidating(req.body);
+  if (validating.error) {
+    res.status(400).send(validating.error.details);
+  }
+  User.findOne({ email: req.body.email })
     .exec()
-    .then(function(user) {
-      bcrypt.compare(req.body.password, user.password, (err, result) => {        
+    .then((user) => {
+      bcrypt.compare(req.body.password, user.password, (err, result) => {
         if (err) {
-          return res.status(401).send('Unauthorized');
+          return res.status(401).send('Password not valid');
         }
         if (result) {
           const JWTToken = jwt.sign({
             email: user.email,
             _id: user._id
           },
-            'secret',
+            'publickKey',
             {
-              expiresIn: '2h'
+              expiresIn: 86400
             });
           return res.status(200).json({
-            success: 'JWT Auth',
             token: JWTToken
-          });
+          })
         }
         return res.status(401).send('Unauthorized Access');
       });
@@ -213,12 +230,10 @@ function userValidating(user) {
   const userSchema = {
     'name': Joi.string().min(5).required(),
     'email': Joi.string().required(),
-    'password': Joi.string().min(5).required(),
-    'age': Joi.number().required()
+    'password': Joi.string().min(5).required()
   }
   return Joi.validate(user, userSchema);
 }
-
 
 //  Expoting the router so app.js can use it in a MiddleWare
 module.exports = router;
