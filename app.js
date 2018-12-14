@@ -8,8 +8,8 @@ const app = express();
 const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 const hello =  require('./hello');
-const usersRoutes = require('./routes/user');
-const postsRoutes = require('./routes/post');
+const usersRoutes = require('./routes/users');
+const postsRoutes = require('./routes/posts');
 const mongoose = require('mongoose');
 
 //  Starting MongoDB connection
@@ -51,6 +51,6 @@ app.get('/', (req, res) => {
 })
 
 // Starting the server
-app.listen(3000, () => {
+app.listen(9999, () => {
   console.log('Running on port 3000');
 });

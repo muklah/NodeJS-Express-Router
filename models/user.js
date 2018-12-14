@@ -17,10 +17,33 @@ const mongoose = require('mongoose');
  *  enum        takes array, similar to in ['','','']
  */
 
+// const userSchema = mongoose.Schema({
+//   _id: mongoose.Schema.Types.ObjectId,
+//   name: {type: String, required: true, minlength: 5, maxlength: 50},
+//   age: Number
+// });
+
 const userSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  name: {type: String, required: true, minlength: 5, maxlength: 50},
-  age: Number
+  name: {
+    type: String,
+    required: function () {
+      return this.age > 3 ;
+    }
+  },
+  email: {
+    type: String,
+    required: [true, 'email Is Required']
+  },
+  password: {
+    type: String,
+    required: [true, 'password Is Required']
+  },
+  age: {
+    type: Number,
+    required: [true, 'Age Is Required']
+  },
+
 });
 
 module.exports = mongoose.model('User', userSchema);
